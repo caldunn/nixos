@@ -18,33 +18,45 @@
 
   };
 
-  outputs = {self, nixpkgs, disko, home-manager, ...}@inputs: 
-  let 
+  outputs =
+    {
+      self,
+      nixpkgs,
+      disko,
+      home-manager,
+      ...
+    }@inputs:
+    let
       system = "x86_64-linux";
-  in {
+    in
+    {
 
-    nixosConfigurations.calebdtn = nixpkgs.lib.nixosSystem {
-      inherit system;
-      modules = [ 
-        ./configuration.nix 
+      nixosConfigurations.calebdtn = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = {
+          inherit inputs;
+        };
+        modules = [
+          ./configuration.nix
 
-        disko.nixosModules.disko
-        ./disko-config.nix
+          disko.nixosModules.disko
+          ./disko-config.nix
 
-        home-manager.nixosModules.home-manager {
+          home-manager.nixosModules.home-manager
+          {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 
             home-manager.users.caleb = import ./home.nix;
-        }
+          }
 
-      ];
+        ];
+      };
+
+      # homeConfigurations.caleb = home-manager.lib.homeManagerConfiguration {
+      #   pkgs = nixpkgs.legacyPackages.${system};
+      #   modules = [ ./home.nix ];
+      # };
     };
-
-    # homeConfigurations.caleb = home-manager.lib.homeManagerConfiguration {
-    #   pkgs = nixpkgs.legacyPackages.${system};
-    #   modules = [ ./home.nix ];
-    # };
-  };
 
 }

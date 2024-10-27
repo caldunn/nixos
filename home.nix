@@ -1,8 +1,8 @@
 { config, pkgs, ... }:
 
-let 
+let
   user-home = "/home/caleb";
-in 
+in
 {
 
   # Home Manager needs a bit of information about you and the paths it should
@@ -84,9 +84,7 @@ in
       theme = "robbyrussell";
     };
 
-
   };
-
 
   programs.git = {
     enable = true;
@@ -94,12 +92,15 @@ in
     userName = "caleb";
   };
 
-  # programs.neovim = {
-  # enable = true;
-  # viAlias = true;
-  # vimAlias = true;
-  # vimdiffAlias = true;
-  # };
+  programs.neovim = {
+    enable = true;
+
+    viAlias = true;
+    vimAlias = true;
+    vimdiffAlias = true;
+
+    plugins = with pkgs.vimPlugins; [ nvim-lspconfig ];
+  };
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
@@ -123,6 +124,5 @@ in
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-
 
 }

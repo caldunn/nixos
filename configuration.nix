@@ -1,8 +1,8 @@
-# beans
 {
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -18,6 +18,8 @@
   nix.channel.enable = false;
   nix.settings.use-xdg-base-directories = true;
 
+  nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
+
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -27,9 +29,8 @@
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true; # Easiest to use and most distros use this by default.
 
-  networking.extraHosts = 
-  ''
-  192.168.101.154 fnix
+  networking.extraHosts = ''
+    192.168.101.154 fnix
   '';
 
   # Set your time zone.
@@ -65,7 +66,10 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # Keep it real :)
   users.defaultUserShell = pkgs.zsh;
@@ -93,9 +97,11 @@
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICXIv0wuhLkAMwgw46wGa/R7V/h5TJYTjT7MM6livs1B caleb@calebdta"
     ];
-    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+    ]; # Enable ‘sudo’ for the user.
   };
-
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -106,7 +112,6 @@
   # };
 
   # List services that you want to enable:
-
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -119,7 +124,7 @@
   # accidentally delete configuration.nix.
   # system.copySystemConfiguration = true;
 
-  system.stateVersion = "24.05"; 
+  system.stateVersion = "24.05";
 
   nix.settings.allowed-users = [ "@wheel" ];
 
