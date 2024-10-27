@@ -6,7 +6,7 @@
 
     # we use disko to format out drives. Lets fetch it and have it track our nixpkgs branch
     disko = {
-      url = "github:nix-community/disko";
+      url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -30,15 +30,21 @@
 
         disko.nixosModules.disko
         ./disko-config.nix
+
+        home-manager.nixosModules.home-manager {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+
+            home-manager.users.caleb = import ./home.nix;
+        }
+
       ];
     };
 
-    homeConfigurations.caleb = home-manager.lib.homeManagerConfiguration {
-      inherit system;
-      pkgs = nixpkgs.legacyPackages.${system};
-      modules = [ ./home.nix ];
-    };
-
+    # homeConfigurations.caleb = home-manager.lib.homeManagerConfiguration {
+    #   pkgs = nixpkgs.legacyPackages.${system};
+    #   modules = [ ./home.nix ];
+    # };
   };
 
 }

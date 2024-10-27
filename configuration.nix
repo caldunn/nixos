@@ -11,8 +11,12 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./packages.nix
-    ./display.nix
+    # ./display.nix
   ];
+
+  # We dont need to manually configure channels
+  nix.channel.enable = false;
+  nix.settings.use-xdg-base-directories = true;
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -22,6 +26,11 @@
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true; # Easiest to use and most distros use this by default.
+
+  networking.extraHosts = 
+  ''
+  192.168.101.154 fnix
+  '';
 
   # Set your time zone.
   time.timeZone = "Australia/Perth";
@@ -62,9 +71,28 @@
   users.defaultUserShell = pkgs.zsh;
   programs.zsh.enable = true;
 
+  # Enable the OpenSSH daemon.
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+    };
+    # we just generate an eliptical key. keep clients known_hosts clean.
+    hostKeys = [
+      {
+        path = "/etc/ssh/ssh_host_ed25519_key";
+        type = "ed25519";
+      }
+    ];
+  };
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.caleb = {
     isNormalUser = true;
+    password = "1";
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICXIv0wuhLkAMwgw46wGa/R7V/h5TJYTjT7MM6livs1B caleb@calebdta"
+    ];
     extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
   };
 
@@ -79,8 +107,6 @@
 
   # List services that you want to enable:
 
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
