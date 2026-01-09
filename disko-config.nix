@@ -1,69 +1,65 @@
 {
   disko.devices = {
     disk = {
+      # Replace this with your actual disk's ID
       main = {
         type = "disk";
-        device = "/dev/vda";
+        # device = "/dev/nvme1n1";
+        device = "/dev/disk/by-id/nvme-Lexar_SSD_NM790_4TB_QER497R000651P220J";
         content = {
           type = "gpt";
           partitions = {
             ESP = {
-              priority = 1;
-              name = "ESP";
-              start = "1M";
-              end = "128M";
               type = "EF00";
+              start = "1M";
+              end = "513M";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = [ "umask=0077" ];
               };
             };
             root = {
               size = "100%";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-f" ]; # Override existing partition
-                # Subvolumes must set a mountpoint in order to be mounted,
-                # unless their parent is mounted
+                extraArgs = [ "-f" ];
                 subvolumes = {
-                  # Subvolume name is different from mountpoint
-                  "/rootfs" = {
+                  "/@root" = {
                     mountpoint = "/";
+                    mountOptions = [
+                      "noatime"
+                      "compress=zstd:3"
+                    ];
                   };
-                  # Subvolume name is the same as the mountpoint
-                  "/home" = {
-                    mountOptions = [ "compress=zstd" ];
+                  "/@home" = {
                     mountpoint = "/home";
+                    mountOptions = [
+                      "noatime"
+                      "compress=zstd:3"
+                    ];
                   };
-                  # Sub(sub)volume doesn't need a mountpoint as its parent is mounted
-                  "/home/user" = { };
-                  # Parent is not mounted so the mountpoint must be set
-                  "/nix" = {
-                    mountOptions = [ "compress=zstd" "noatime" ];
+                  "/@nix" = {
                     mountpoint = "/nix";
+                    mountOptions = [
+                      "noatime"
+                      "compress=zstd:3"
+                      "space_cache=v2"
+                    ];
                   };
-                  # This subvolume will be created but not mounted
-                  "/test" = { };
-                  # Subvolume for the swapfile
-                  "/swap" = {
-                    mountpoint = "/.swapvol";
-                    swap = {
-                      swapfile.size = "20M";
-                      swapfile2.size = "20M";
-                      swapfile2.path = "rel-path";
-                    };
+                  "/@snapshots" = {
+                    mountpoint = "/.snapshots";
+                    mountOptions = [
+                      "noatime"
+                      "compress=zstd:3"
+                    ];
                   };
-                };
-
-                mountpoint = "/partition-root";
-                swap = {
-                  swapfile = {
-                    size = "20M";
-                  };
-                  swapfile1 = {
-                    size = "20M";
+                  "/@steam" = {
+                    mountpoint = "/steam";
+                    mountOptions = [
+                      "noatime"
+                      "nodatacow"
+                    ];
                   };
                 };
               };
@@ -74,4 +70,3 @@
     };
   };
 }
-

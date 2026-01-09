@@ -1,23 +1,10 @@
 { config, pkgs, ... }:
 
-let
-  user-home = "/home/caleb";
-in
 {
-
-  # Home Manager needs a bit of information about you and the paths it should
-  # manage.
   home.username = "caleb";
-  home.homeDirectory = user-home;
+  home.homeDirectory = "/home/caleb";
 
-  # This value determines the Home Manager release that your configuration is
-  # compatible with. This helps avoid breakage when a new Home Manager release
-  # introduces backwards incompatible changes.
-  #
-  # You should not change this value, even if you update Home Manager. If you do
-  # want to update the value, then make sure to first check the Home Manager
-  # release notes.
-  home.stateVersion = "24.05"; # Please read the comment before changing.
+  home.stateVersion = "25.05"; # Please read the comment before changing.
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
@@ -63,13 +50,10 @@ in
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
-    dotDir = ".config/zsh";
-
     shellAliases = {
       ll = "ls -l";
-      update = "sudo nixos-rebuild switch --flake ${user-home}/nix/";
+      update = "sudo nixos-rebuild switch --flake /home/caleb/nix/";
     };
-
     history = {
       size = 10000;
       path = "${config.xdg.dataHome}/zsh/history";
@@ -79,28 +63,35 @@ in
       enable = true;
       plugins = [
         "git"
+        "z"
         "sudo"
       ];
       theme = "robbyrussell";
     };
-
   };
 
-  programs.git = {
+  home.file = {
+  	"./.config/tofi/config".source = ./dotfiles/tofi.conf;
+  };
+
+  programs.kitty = {
     enable = true;
-    userEmail = "caleb@calebdunn.dev";
-    userName = "caleb";
+    themeFile = "tokyo_night_night";
+    font = {
+      name = "JetBrainsMono Nerd Font Mono";
+      size = 12;
+    };
   };
+  wayland.windowManager.hyprland.enable = true;
 
-  programs.neovim = {
-    enable = true;
+  wayland.windowManager.hyprland.extraConfig = "${builtins.readFile ./dotfiles/hyprland.conf}";
 
-    viAlias = true;
-    vimAlias = true;
-    vimdiffAlias = true;
-
-    plugins = with pkgs.vimPlugins; [ nvim-lspconfig ];
-  };
+  # programs.neovim = {
+  # enable = true;
+  # viAlias = true;
+  # vimAlias = true;
+  # vimdiffAlias = true;
+  # };
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
@@ -122,6 +113,22 @@ in
     EDITOR = "nvim";
   };
 
+  
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Orchis-Grey-Dark";
+      package = pkgs.orchis-theme;
+      };
+  };
+
+    home.pointerCursor = {
+    gtk.enable = true; # Enable for GTK applications
+    x11.enable = true; # Enable for X11 applications
+    name = "Catppuccin-Mocha-Light-Cursors"; # The name of the cursor pack
+    package = pkgs.catppuccin-cursors.mochaLavender; # The Nix package
+    size = 24; # Optional: The size of the cursor
+  };
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 

@@ -5,30 +5,63 @@
   ...
 }:
 
-
 {
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
     neovim
-# language server
-    nixd
-    nixfmt-rfc-style
-    ripgrep
-    lua
-    # wget
+    wget
     kitty
     git
-    lazygit
+    iperf
+    firefox
+    rustup
+    python314
+    nginx
+
+    waybar
+    tofi
+
+    xfce.thunar
+
+    neofetch
+    transmission_4-gtk
+
+    jdk21_headless
+
+    # dev
     clang
-    # nix-output-monitor
-    nodejs_22
-    go
-    dotnetCorePackages.sdk_8_0_3xx
-    gcc
-    # rustup
-    # nixfmt-rfc-style
-    # tmux
-    # openssl
+
+    kdePackages.filelight
+
+    # nonsteam launcher
+    zenity
+    jq
+    unzip
+
+    # image utils
+    imagemagick
+
+    # clipboard manager
+    cliphist
+    wl-clipboard
+
+    #bluetooth
+    bluetui
+
+    # content
+    mpv
+    spotify
+
+    # process management
+    btop
+    lsof
+
+    # notifications
+    dunst
+
+    #speed tests
+    iperf
   ];
 
+  nonfoss = [ "spotify" ];
 }
