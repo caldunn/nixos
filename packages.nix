@@ -11,7 +11,6 @@
     neovim
     wget
     kitty
-    git
     iperf
     firefox
     rustup
