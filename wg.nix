@@ -8,11 +8,10 @@
 {
   networking.wireguard.interfaces.wg0 = {
     ips = [ "10.10.10.5/32" ];
-    privateKeyFile = "/home/caleb/nix/private.key";
+    privateKeyFile = "/home/caleb/.config/wg/private.key";
     peers = [
       {
         publicKey = "zosAf+DMivaLmsgnDdpXabSeIU4whco1DtsFTjlXOHk=";
-        # presharedKeyFile = "/home/caleb/nix/psk.key";
         allowedIPs = [
           "10.0.0.0/16"
         ];

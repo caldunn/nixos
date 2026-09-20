@@ -76,10 +76,6 @@
     '';
   };
 
-  home.file = {
-    "./.config/tofi/config".source = ./dotfiles/tofi.conf;
-  };
-
   programs.kitty = {
     enable = true;
     themeFile = "tokyo_night_night";
@@ -96,7 +92,7 @@
     enable = true;
     systemd.enable = false;
     configType = "lua";
-    # extraConfig = "${builtins.readFile ./dotfiles/hyprland.conf}";
+    extraConfig = "${builtins.readFile ./dotfiles/hyprland/hyprland.lua}";
   };
 
   programs.noctalia = {

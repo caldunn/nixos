@@ -8,21 +8,15 @@
 {
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
-    goflow2
     winbox
     bitwarden-desktop
     neovim
     wget
     kitty
-    iperf
     firefox
     rustup
     python314
-    nginx
     gimp
-
-    waybar
-    tofi
 
     thunar
 
@@ -59,9 +53,6 @@
     btop
     lsof
 
-    # notifications
-    dunst
-
     #speed tests
     iperf
 
@@ -73,6 +64,13 @@
     # qr code generator
     qrencode
   ];
+
+  programs.nh = {
+    enable = true;
+    clean.enable = true;
+    clean.extraArgs = "--keep-since 4d --keep 3";
+    flake = "/home/caleb/nix";
+  };
 
   nonfoss = [
     "spotify"

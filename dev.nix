@@ -31,11 +31,7 @@
     fd
     ripgrep
 
-    git
     lazygit
-
-    # breaking my build atm.
-    # mycli
 
     # terminal mulitplexer
     zellij
