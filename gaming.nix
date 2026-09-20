@@ -11,6 +11,7 @@
     "steam"
     "steam-unwrapped"
     "discord"
+    "discord-unwrapped"
   ];
 
   programs = {
@@ -58,4 +59,7 @@
     prismlauncher
     r2modman
   ];
+
+  # I want mutable settings for this badboi
+  services.sunshine.enable = true;
 }

@@ -22,6 +22,8 @@
     ./media-services.nix
     ./docker.nix
     ./nginx.nix
+    ./wg.nix
+    # ./monitor.nix
   ];
 
   # Use the systemd-boot EFI boot loader.
@@ -71,16 +73,21 @@
     pulse.enable = true;
     jack.enable = true;
 
-    # extraConfig = {
-    #   "bluez5-config.conf" = ''
-    #     bluez5.default-profile = a2dp-sink
-    #   '';
-    # };
-    wireplumber.extraConfig."11-bluetooth-policy" = {
-      "wireplumber.settings" = {
-        "bluetooth.autoswitch-to-headset-profile" = false;
-      };
+    # Sick of my airpods connecting via this. I don't use a wireless mic anyways.
+    wireplumber.extraConfig = {
+      "10-airpods-a2dp-only" = {
+        "monitor.bluez.properties" = {
+          # This restricts the roles available to bluetooth devices
+          "bluez5.roles" = [
+            "a2dp_sink"
+            "a2dp_source"
+          ];
 
+          # Optional: Enable SBC-XQ (XQ-Dual Channel) for better SBC quality
+          # if you aren't using AAC/LDAC for some reason
+          "bluez5.enable-sbc-xq" = true;
+        };
+      };
     };
   };
 
@@ -112,6 +119,8 @@
     ]; # Enable ‘sudo’ for the user.
   };
 
+  services.udisks2.enable = true;
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -139,5 +148,8 @@
   system.stateVersion = "25.05";
 
   nix.settings.allowed-users = [ "@wheel" ];
+
+  # for some esp development.
+  programs.nix-ld.enable = true;
 
 }

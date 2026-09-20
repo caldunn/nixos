@@ -7,13 +7,25 @@
 
 {
   services.displayManager = {
-    enable = true;
-    # videosDrivers = ["amdgpu"];
-    gdm = {
+    noctalia-greeter = {
       enable = true;
-      wayland = true;
+      # passwordlessSyncUsers = [ "caleb" ];
+      settings = {
+        appearance = {
+          hide_logo = true;
+        };
+
+      };
+      cursorTheme = {
+        package = pkgs.bibata-cursors;
+        name = "Bibata-Modern-Ice";
+      };
+
     };
   };
+
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.greetd.enableGnomeKeyring = true;
 
   hardware.graphics = {
     enable = true;
@@ -36,7 +48,10 @@
   # };
 
   # Hyprland
-  programs.hyprland.enable = true;
+  programs.hyprland = {
+    enable = true;
+    withUWSM = true;
+  };
 
   # hint electron apps to use wayland:o
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
@@ -47,15 +62,10 @@
     pavucontrol
     pamixer
 
-    # bluetooth gui
-    overskride
-
     lact
 
-    # Screenshotting
-    slurp
-    grim
-    swappy
+    adw-gtk3
+    nwg-look
   ];
 
   fonts.packages =

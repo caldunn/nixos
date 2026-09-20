@@ -1,27 +1,17 @@
-{ config, pkgs, ... }:
+{
+  inputs,
+  config,
+  pkgs,
+  ...
+}:
 
 {
-  home.username = "caleb";
-  home.homeDirectory = "/home/caleb";
+  imports = [
+    inputs.noctalia.homeModules.default
+  ];
+  home.stateVersion = "25.05";
 
-  home.stateVersion = "25.05"; # Please read the comment before changing.
-
-  # The home.packages option allows you to install Nix packages into your
-  # environment.
   home.packages = [
-
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
-
-    # # You can also create simple shell scripts directly inside your
-    # # configuration. For example, this adds a command 'my-hello' to your
-    # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -43,6 +33,12 @@
   #   # source = ./nvim;
   #   recursive = true;
   # };
+
+  programs.direnv = {
+    enable = true;
+    enableZshIntegration = true;
+    silent = true;
+  };
 
   programs.zsh = {
     enable = true;
@@ -66,12 +62,22 @@
         "z"
         "sudo"
       ];
-      theme = "robbyrussell";
+      theme = "minimal";
     };
+
+    initContent = ''
+      nix_shell_prompt() {
+        if [[ -n $IN_NIX_SHELL ]]; then 
+          echo "❄️ "
+        fi
+      }
+      PROMPT='%F{blue}%1~%f '
+      PROMPT=$PROMPT'$(nix_shell_prompt)'
+    '';
   };
 
   home.file = {
-  	"./.config/tofi/config".source = ./dotfiles/tofi.conf;
+    "./.config/tofi/config".source = ./dotfiles/tofi.conf;
   };
 
   programs.kitty = {
@@ -81,10 +87,32 @@
       name = "JetBrainsMono Nerd Font Mono";
       size = 12;
     };
+    settings = {
+      confirm_os_window_close = 0;
+    };
   };
-  wayland.windowManager.hyprland.enable = true;
 
-  wayland.windowManager.hyprland.extraConfig = "${builtins.readFile ./dotfiles/hyprland.conf}";
+  wayland.windowManager.hyprland = {
+    enable = true;
+    systemd.enable = false;
+    configType = "lua";
+    # extraConfig = "${builtins.readFile ./dotfiles/hyprland.conf}";
+  };
+
+  programs.noctalia = {
+    enable = true;
+    systemd.enable = true;
+    # recommendedServices.enable = true;
+
+    settings = {
+      theme = {
+        mode = "dark";
+        source = "builtin";
+        builtin = "Catppuccin";
+      };
+    };
+
+  };
 
   # programs.neovim = {
   # enable = true;
@@ -113,23 +141,22 @@
     EDITOR = "nvim";
   };
 
-  
+  home.sessionPath = [
+    "$HOME/.cargo/bin"
+  ];
+
   gtk = {
     enable = true;
-    theme = {
-      name = "Orchis-Grey-Dark";
-      package = pkgs.orchis-theme;
-      };
   };
 
-    home.pointerCursor = {
-    gtk.enable = true; # Enable for GTK applications
-    x11.enable = true; # Enable for X11 applications
-    name = "Catppuccin-Mocha-Light-Cursors"; # The name of the cursor pack
-    package = pkgs.catppuccin-cursors.mochaLavender; # The Nix package
-    size = 24; # Optional: The size of the cursor
+  home.pointerCursor = {
+    enable = true;
+    # Enable for GTK applications
+    gtk.enable = true;
+
+    name = "Bibata-Modern-Ice";
+    package = pkgs.bibata-cursors;
+    size = 24;
   };
-  # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
 
 }

@@ -16,6 +16,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    noctalia = {
+      url = "github:noctalia-dev/noctalia";
+      inputs.nixpkgs.follows = "nixpkgs"; # this line is optional, prevents downloading two versions of nixpkgs but disables cache
+    };
   };
 
   outputs =
@@ -41,18 +45,13 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.users.caleb = ./home.nix;
           }
 
           disko.nixosModules.disko
           ./disko-config.nix
         ];
-      };
-
-      homeConfigurations.caleb = home-manager.lib.homeManagerConfiguration {
-        inherit system;
-        pkgs = nixpkgs.legacyPackages.${system};
-        modules = [ ./home.nix ];
       };
 
     };

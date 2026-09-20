@@ -8,6 +8,9 @@
 {
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
+    goflow2
+    winbox
+    bitwarden-desktop
     neovim
     wget
     kitty
@@ -16,13 +19,14 @@
     rustup
     python314
     nginx
+    gimp
 
     waybar
     tofi
 
-    xfce.thunar
+    thunar
 
-    neofetch
+    fastfetch
     transmission_4-gtk
 
     jdk21_headless
@@ -60,7 +64,18 @@
 
     #speed tests
     iperf
+
+    ungoogled-chromium
+
+    # some of my keys are broken;
+    maliit-keyboard
+
+    # qr code generator
+    qrencode
   ];
 
-  nonfoss = [ "spotify" ];
+  nonfoss = [
+    "spotify"
+    "winbox"
+  ];
 }
