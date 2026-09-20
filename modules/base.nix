@@ -6,24 +6,12 @@
 }:
 
 {
+  # Everything every machine gets. Anything optional (desktop, gaming, server
+  # services, ...) is imported per host from hosts/<name>/default.nix.
   imports = [
-    # Include the results of the hardware scan.
-    ./hardware-configuration.nix
-    ./drives.nix
-    ./packages.nix
-    ./display.nix
-
     ./global-options.nix
-
-    # random stuff, this should go in an init.nix like file.
+    ./packages.nix
     ./qol.nix
-    ./gaming.nix
-    ./dev.nix
-    ./media-services.nix
-    ./docker.nix
-    ./nginx.nix
-    ./wg.nix
-    # ./monitor.nix
   ];
 
   # Use the systemd-boot EFI boot loader.
@@ -34,7 +22,7 @@
     };
   };
 
-  networking.hostName = "calebdtn"; # Define your hostname.
+  # networking.hostName is set from the flake output name (see mkHost in flake.nix).
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true; # Easiest to use and most distros use this by default.

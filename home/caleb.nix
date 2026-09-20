@@ -1,5 +1,6 @@
 {
   inputs,
+  hostname,
   config,
   pkgs,
   ...
@@ -92,7 +93,10 @@
     enable = true;
     systemd.enable = false;
     configType = "lua";
-    extraConfig = "${builtins.readFile ./dotfiles/hyprland/hyprland.lua}";
+    extraConfig = ''
+      ${builtins.readFile ../dotfiles/hyprland/hyprland.lua}
+      ${builtins.readFile ../hosts/${hostname}/monitors.lua}
+    '';
   };
 
   programs.noctalia = {

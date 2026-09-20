@@ -31,29 +31,37 @@
       ...
     }@inputs:
     let
-      system = "x86_64-linux";
+      # One machine = one directory in hosts/ + one entry in this list. The name is also the
+      # networking.hostName, so `nixos-rebuild switch --flake .` picks the right config by itself.
+      hosts = [
+        "calebdtn"
+        "calebraptort16"
+      ];
+
+      mkHost =
+        hostname:
+        nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs hostname; };
+
+          modules = [
+            ./modules/base.nix
+            ./hosts/${hostname}
+            { networking.hostName = hostname; }
+
+            disko.nixosModules.disko
+
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = { inherit inputs hostname; };
+              home-manager.users.caleb = ./home/caleb.nix;
+            }
+          ];
+        };
     in
     {
-
-      nixosConfigurations.calebdtn = nixpkgs.lib.nixosSystem {
-        inherit system;
-
-        modules = [
-          ./configuration.nix
-
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.caleb = ./home.nix;
-          }
-
-          disko.nixosModules.disko
-          ./disko-config.nix
-        ];
-      };
-
+      nixosConfigurations = nixpkgs.lib.genAttrs hosts mkHost;
     };
 
 }

@@ -38,9 +38,6 @@
   };
   # services.xserver.videoDrivers = [ "amdgpu" ];
 
-  systemd.packages = with pkgs; [ lact ];
-  systemd.services.lactd.wantedBy = [ "multi-user.target" ];
-
   # hardware.opengl = {
   # enable = true;
   # driSupport = true;
@@ -61,8 +58,6 @@
   environment.systemPackages = with pkgs; [
     pavucontrol
     pamixer
-
-    lact
 
     adw-gtk3
     nwg-look
