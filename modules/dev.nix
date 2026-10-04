@@ -105,6 +105,8 @@
     claude-code
 
     wireguard-tools
+
+    postgresql
   ];
 
   # lets just set git credentials for the entire system. I don't have multiple users on this bad
@@ -129,6 +131,7 @@
     "android-studio"
     "mqtt-explorer"
     "claude-code"
+    "timescaledb"
   ];
 
   virtualisation.docker = {
@@ -152,6 +155,44 @@
         };
       }
     ];
+  };
+
+  # I want the same as work - so pg-16
+  systemd.services.postgres-v16 = {
+    description = "pg-16";
+    after = [ "network.target" ];
+    wantedBy = [ "multi-user.target" ];
+
+    environment = {
+      PGDATA = "/var/lib/postgresql/16/data";
+    };
+
+    serviceConfig =
+      let
+        pg_version = pkgs.postgresql_16.withPackages (ps: [
+          ps.timescaledb
+          ps.postgis
+        ]);
+      in
+      {
+        User = "postgres";
+        Group = "postgres";
+        ExecStartPre = pkgs.writeShellScript "init-pg16-db" ''
+          if [ ! -d "$PGDATA" ]; then
+            mkdir -p "$PGDATA"
+            ${pg_version}/bin/initdb --pgdata="$PGDATA" --auth=trust
+          fi
+        '';
+        ExecStart = "${pg_version}/bin/postgres -D $PGDATA -p 5433 -c shared_preload_libraries=timescaledb";
+        ExecStop = "${pg_version}/bin/pg_ctl stop -D $PGDATA";
+        RuntimeDirectory = "postgresql-v16";
+        Type = "notify";
+        TimeoutSec = 300;
+      };
+  };
+
+  services.mosquitto = {
+    enable = true;
   };
 
   services.mysql = {

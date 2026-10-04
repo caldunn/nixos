@@ -8,7 +8,7 @@
 
 {
   imports = [
-    inputs.noctalia.homeModules.default
+    # inputs.noctalia.homeModules.default
   ];
   home.stateVersion = "25.05";
 
@@ -16,24 +16,8 @@
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  # plain files is through 'home.file'.
   home.file = {
-    # # Building this configuration will create a copy of 'dotfiles/screenrc' in
-    # # the Nix store. Activating the configuration will then make '~/.screenrc' a
-    # # symlink to the Nix store copy.
-    # ".screenrc".source = dotfiles/screenrc;
-
-    # # You can also set the file content immediately.
-    # ".gradle/gradle.properties".text = ''
-    #   org.gradle.console=verbose
-    #   org.gradle.daemon.idletimeout=3600000
-    # '';
   };
-
-  # home.file."./.config/nvim/" = {
-  #   # source = ./nvim;
-  #   recursive = true;
-  # };
 
   programs.direnv = {
     enable = true;
@@ -49,7 +33,8 @@
 
     shellAliases = {
       ll = "ls -l";
-      update = "sudo nixos-rebuild switch --flake /home/caleb/nix/";
+      update = "nh os switch";
+      nh-clean = "nh clean --no-direnv";
     };
     history = {
       size = 10000;
@@ -86,6 +71,8 @@
     };
     settings = {
       confirm_os_window_close = 0;
+      # kitty restores a cached "maximized" state, which Hyprland honors
+      remember_window_size = "no";
     };
   };
 
@@ -113,13 +100,6 @@
     };
 
   };
-
-  # programs.neovim = {
-  # enable = true;
-  # viAlias = true;
-  # vimAlias = true;
-  # vimdiffAlias = true;
-  # };
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
@@ -157,6 +137,33 @@
     name = "Bibata-Modern-Ice";
     package = pkgs.bibata-cursors;
     size = 24;
+  };
+
+  programs.firefox.profiles.personal = {
+    id = 0;
+    isDefault = true;
+    path = "personal";
+  };
+
+  programs.firefox.profiles.work = {
+    id = 1;
+    isDefault = false;
+    path = "work";
+  };
+
+  # work firefox
+  xdg.desktopEntries.firefox-work = {
+    name = "Firefox (Work)";
+    comment = "Firefox with Work profile";
+    exec = "firefox -P work --new-instance";
+    icon = "firefox";
+    terminal = false;
+    type = "Application";
+    categories = [
+      "Network"
+      "WebBrowser"
+    ];
+
   };
 
 }

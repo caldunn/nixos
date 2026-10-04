@@ -127,4 +127,9 @@
   # for some esp development.
   programs.nix-ld.enable = true;
 
+  # dns resolution
+  services.resolved = {
+    enable = true;
+  };
+
 }

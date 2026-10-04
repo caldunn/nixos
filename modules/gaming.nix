@@ -48,7 +48,10 @@
   };
 
   programs.gamemode.enable = true;
-  users.users.caleb.extraGroups = [ "gamemode" ];
+  users.users.caleb.extraGroups = [
+    "gamemode"
+    "uinput"
+  ];
 
   environment.systemPackages = with pkgs; [
     discord
@@ -61,5 +64,10 @@
   ];
 
   # I want mutable settings for this badboi
-  services.sunshine.enable = true;
+  services.sunshine = {
+    enable = true;
+    autoStart = true;
+    capSysAdmin = true;
+  };
+
 }
