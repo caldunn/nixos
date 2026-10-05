@@ -63,6 +63,11 @@
 
     # qr code generator
     qrencode
+
+    usbutils
+
+    # obsidian for notes
+    obsidian
   ];
 
   programs.nh = {
@@ -75,5 +80,6 @@
   nonfoss = [
     "spotify"
     "winbox"
+    "obsidian"
   ];
 }

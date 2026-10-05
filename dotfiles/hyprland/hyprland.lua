@@ -231,4 +231,4 @@ end)
 hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 
 -- For Noctalia Color templates
-require("noctalia").apply_theme()
+-- require("noctalia").apply_theme()

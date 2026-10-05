@@ -107,18 +107,38 @@
     wireguard-tools
 
     postgresql
+
+    teams-for-linux
+    terraform
+    terraform-ls
+
+    pyright
+    ruff
+
+    # talos management tool - also lets vms be created locally
+    talosctl
+    kubernetes-helm
+
+    # yaml parsing
+    yq
+
+    go
+    gcc
   ];
 
   # lets just set git credentials for the entire system. I don't have multiple users on this bad
   # boi
   programs.git = {
     enable = true;
-    # config = {
-    #   user = {
-    #     email = "caleb@calebdunn.dev";
-    #     name = "Caleb Dunn";
-    #   };
-    # };
+    config = {
+      user = {
+        email = "caleb.dunn@raptortech.com.au";
+        name = "Caleb Dunn";
+        signingkey = "/home/caleb/.ssh/id_ed25519.pub";
+      };
+      gpg.format = "ssh";
+      commit.gpgsign = true;
+    };
   };
 
   nonfoss = [
@@ -132,6 +152,7 @@
     "mqtt-explorer"
     "claude-code"
     "timescaledb"
+    "terraform"
   ];
 
   virtualisation.docker = {

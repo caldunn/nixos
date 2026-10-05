@@ -12,12 +12,7 @@
   ];
   home.stateVersion = "25.05";
 
-  home.packages = [
-  ];
-
-  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  home.file = {
-  };
+  home.file = { };
 
   programs.direnv = {
     enable = true;
@@ -34,8 +29,9 @@
     shellAliases = {
       ll = "ls -l";
       update = "nh os switch";
-      nh-clean = "nh clean --no-direnv";
+      nh-clean = "nh clean all --no-direnv";
     };
+
     history = {
       size = 10000;
       path = "${config.xdg.dataHome}/zsh/history";
@@ -101,22 +97,6 @@
 
   };
 
-  # Home Manager can also manage your environment variables through
-  # 'home.sessionVariables'. These will be explicitly sourced when using a
-  # shell provided by Home Manager. If you don't want to manage your shell
-  # through Home Manager then you have to manually source 'hm-session-vars.sh'
-  # located at either
-  #
-  #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  /etc/profiles/per-user/caleb/etc/profile.d/hm-session-vars.sh
-  #
   home.sessionVariables = {
     EDITOR = "nvim";
   };
