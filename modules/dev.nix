@@ -119,11 +119,16 @@
     talosctl
     kubernetes-helm
 
+    # local wildcard certs for the talos cluster ingress
+    mkcert
+
     # yaml parsing
     yq
 
     go
     gcc
+
+    socat
   ];
 
   # lets just set git credentials for the entire system. I don't have multiple users on this bad
@@ -194,6 +199,14 @@
           ps.timescaledb
           ps.postgis
         ]);
+        # local talos cluster (~/dev/k8s) reaches this over the libvirt bridge; the firewall is
+        # off, so this is what keeps the rest of the LAN out
+        hba = pkgs.writeText "pg16-hba.conf" ''
+          local all all              trust
+          host  all all 127.0.0.1/32 trust
+          host  all all ::1/128      trust
+          host  all ros 10.10.0.0/24 scram-sha-256
+        '';
       in
       {
         User = "postgres";
@@ -204,7 +217,7 @@
             ${pg_version}/bin/initdb --pgdata="$PGDATA" --auth=trust
           fi
         '';
-        ExecStart = "${pg_version}/bin/postgres -D $PGDATA -p 5433 -c shared_preload_libraries=timescaledb";
+        ExecStart = "${pg_version}/bin/postgres -D $PGDATA -p 5433 -c shared_preload_libraries=timescaledb -c listen_addresses=* -c hba_file=${hba}";
         ExecStop = "${pg_version}/bin/pg_ctl stop -D $PGDATA";
         RuntimeDirectory = "postgresql-v16";
         Type = "notify";
@@ -214,6 +227,29 @@
 
   services.mosquitto = {
     enable = true;
+    listeners = [
+      # local tools (mqtt-explorer etc.)
+      {
+        address = "127.0.0.1";
+        port = 1883;
+        omitPasswordAuth = true;
+        settings.allow_anonymous = true;
+        acl = [ "topic readwrite #" ];
+
+        # users.test = {
+        #   password = "test";
+        #   acl = [ "topic readwrite #" ];
+        # };
+      }
+      # local talos cluster (~/dev/k8s); password file is created by hand, see k8s/README.md
+      # {
+      #   port = 1884;
+      #   users.ros = {
+      #     passwordFile = "/var/lib/mosquitto/ros.pass";
+      #     acl = [ "readwrite #" ];
+      #   };
+      # }
+    ];
   };
 
   services.mysql = {

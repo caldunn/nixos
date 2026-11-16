@@ -8,6 +8,7 @@
 {
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
+    seahorse
     winbox
     bitwarden-desktop
     neovim
@@ -68,6 +69,10 @@
 
     # obsidian for notes
     obsidian
+
+    slack
+
+    lf
   ];
 
   programs.nh = {
@@ -81,5 +86,6 @@
     "spotify"
     "winbox"
     "obsidian"
+    "slack"
   ];
 }

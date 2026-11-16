@@ -103,6 +103,7 @@
 
   home.sessionPath = [
     "$HOME/.cargo/bin"
+    "$HOME/.local/bin"
   ];
 
   gtk = {
